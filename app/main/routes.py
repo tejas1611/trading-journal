@@ -4,10 +4,10 @@ import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from app import db
-from app.tools import allowed_file, csv_import
 from app.main.forms import RiskCalculator, TradeForm, UpdateTradeForm
 from app.main import bp
 from sqlalchemy import desc, exc
+from app.main.tools import CHECKLISTS, read_checklist_file
 
 dateformat = "%Y-%m-%d"
 
@@ -196,6 +196,31 @@ def risk_calculator():
 
     return render_template("risk_calculator.html", form=form, risk=risk)
 
-@bp.route("/checklist")
-def checklist():
-    return render_template("checklist.html")
+@bp.route("/checklist/<ref>")
+def checklist(ref):
+    """
+    Checklists
+    """
+    checklists: dict = {}
+    img = []
+
+    if int(ref) == CHECKLISTS.START_OF_DAY.value:
+        checklists = read_checklist_file("app\\static\\checklists\\startOfDay.txt")
+    elif int(ref) == CHECKLISTS.BEFORE_TRADE.value:
+        checklists = read_checklist_file("app\\static\\checklists\\before.txt")
+    elif int(ref) == CHECKLISTS.AFTER_TRADE.value:
+        checklists = read_checklist_file("app\\static\\checklists\\after.txt")
+    elif int(ref) == CHECKLISTS.BP_3_4.value:
+        read_dict = read_checklist_file("app\\static\\checklists\\before.txt")
+        read_dict2 = read_checklist_file("app\\static\\checklists\\3_4bp.txt")
+        read_dict3 = read_checklist_file("app\\static\\checklists\\after.txt")
+        checklists = {**read_dict, **read_dict2, **read_dict3}
+        img.append("../static/checklists/3_4bp.png")
+    elif int(ref) == CHECKLISTS.BUY_SETUP.value:
+        read_dict = read_checklist_file("app\\static\\checklists\\before.txt")
+        read_dict2 = read_checklist_file("app\\static\\checklists\\buySetup.txt")
+        read_dict3 = read_checklist_file("app\\static\\checklists\\after.txt")
+        checklists = {**read_dict, **read_dict2, **read_dict3}
+        img.append("../static/checklists/buySetup.png")
+
+    return render_template("checklist.html", checklists=checklists, img=img)

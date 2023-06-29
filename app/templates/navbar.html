@@ -15,8 +15,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.risk_calculator') }}">Risk Calculator</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.checklist') }}">Checklists</a>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Checklists
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="{{ url_for('main.checklist', ref=1) }}">Start of Day</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.checklist', ref=2) }}">Before Trade</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.checklist', ref=3) }}">After Trade</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.checklist', ref=4) }}">3/4 Bar Play</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('main.checklist', ref=5) }}">Buy Setup</a></li>
+            </ul>
           </li>
           <li class="nav-item">
             <a class="nav-link" target="_blank" href="https://www.dailyfx.com/economic-calendar">Economic Calendar</a>
