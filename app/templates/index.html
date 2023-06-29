@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+
+<div style="width:100%;" class="row">
+    <div class="my-4 col"><canvas id="piechart" style="width:100%; height:400px;"></canvas></div>
+    <div class="my-4 col"><canvas id="barchart" style="width:100%; height:400px;"></canvas></div>
+</div>
+
+<script>
+    var ctx = document.getElementById("piechart").getContext("2d")
+    var piechart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: {{ winloss_labels | safe }},
+            datasets: [
+                {
+                    label: "Win/Loss ratio",
+                    data: {{ winloss_values | safe  }},
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 99, 132)'
+                    ],
+                }
+            ]
+        },
+        options: {
+            responsive: false
+        }
+    });
+</script>
+<script>
+    var ctx = document.getElementById("barchart").getContext("2d")
+    var barchart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: {{ latest_labels | safe }},
+            datasets: [
+                {
+                    label: 'Lastest trade performance',
+                    data: {{ latest_values | safe }},
+                    backgroundColor: [
+                        'rgb(250, 250, 110)',
+                        'rgb(196, 236, 116)',
+                        'rgb(146, 220, 126)',
+                        'rgb(100, 201, 135)',
+                        'rgb(57, 180, 142)',
+                        'rgb(8, 159, 143)',
+                        'rgb(0, 137, 138)',
+                        'rgb(8, 115, 127)',
+                        'rgb(33, 93, 110)',
+                        'rgb(42, 72, 88)'
+                    ]
+                }
+            ]
+        },
+        options: {
+            responsive: false
+        }
+    });
+</script>
+{% endblock %}
+
+
+{% block table %}
+<h3>Open Trades</h3>
+<div class="table-responsive">
+    <table id='opentrades' class='table table-sm table-hover table-bordered'>
+        <thead class="table-dark">
+            <tr>
+                <th>Ref</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>No. of Shares</th>
+                <th>Buy Price $</th>
+                <th>Position Size $</th>
+                <th>Notes</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in opentrades %}
+            <tr>
+                <td>{{ trade.ref }}</td>
+                <td>{{ trade.date }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.num_shares }}</td>
+                <td>{{ trade.buy_price }}</td>
+                <td>{{ trade.position_size }}</td>
+                <td>{{ trade.notes }}</td>
+                <td><button class="btn btn-sm btn-primary" onclick="updateTrade({{ trade.ref }})">Edit</button></td>
+                <td><button class="btn btn-sm btn-primary btn-danger" onclick="deleteTrade({{ trade.ref }})">Delete</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br/>
+<h3>Closed Trades</h3>
+<div class="table-responsive">
+    <table id='closedtrades' class='table table-sm table-hover table-bordered'>
+        <thead class="table-dark">
+            <tr>
+                <th>Ref</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>No. of Shares</th>
+                <th>Buy Price $</th>
+                <th>Position Size $</th>
+                <th>Sell Date</th>
+                <th>Sell Price $</th>
+                <th>Profit/Loss $</th>
+                <th>ROI %</th>
+                <th>Notes</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trade in closedtrades %}
+                <tr>
+                    <td>{{ trade.ref }}</td>
+                    <td>{{ trade.date }}</td>
+                    <td>{{ trade.symbol }}</td>
+                    <td>{{ trade.num_shares }}</td>
+                    <td>{{ trade.buy_price }}</td>
+                    <td>{{ trade.position_size }}</td>
+                    <td>{{ trade.sell_date }}</td>
+                    <td>{{ trade.sell_price }}</td>
+                    <td>{{ trade.net_pnl }}</td>
+                    <td>{{ trade.net_roi }}</td>
+                    <td>{{ trade.notes }}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick="updateTrade({{ trade.ref }})">Edit</button></td>
+                    <td><button class="btn btn-sm btn-primary btn-danger" onclick="deleteTrade({{ trade.ref }})">Delete</button></td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> -->
+<script>
+    $(document).ready(function () {
+        $('#opentrades').DataTable({
+            pageLength: 10,
+            lengthChange: false,
+            searching: false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#closedtrades').DataTable({
+            pageLength: 10,
+            lengthChange: false,
+            searching: false,
+        });
+    });
+</script>
+<script>
+    function updateTrade(ref) {
+        window.location.href = `/trade/update/${ref}`;    
+    }
+
+    function deleteTrade(ref) {
+        fetch(`/trade/delete/${ref}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function (response) {
+                console.log(data);
+            }
+        }).then(function(response) {
+                location.reload()
+            })
+    }
+</script>
+{% endblock %}

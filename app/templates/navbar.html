@@ -1,0 +1,36 @@
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Trading Journal</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{{ url_for('main.add_trade') }}">Add Trade</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.risk_calculator') }}">Risk Calculator</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.checklist') }}">Checklists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="https://www.dailyfx.com/economic-calendar">Economic Calendar</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>
+
+<script>
+    document.querySelectorAll(".nav-link").forEach((link) => {
+    if (link.href === window.location.href) {
+        link.classList.add("active");
+        link.setAttribute("aria-current", "page");
+    }
+});
+</script>
