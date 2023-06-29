@@ -196,7 +196,7 @@ def risk_calculator():
 
     return render_template("risk_calculator.html", form=form, risk=risk)
 
-@bp.route("/checklist/<ref>")
+@bp.route("/checklist/<ref>", methods=["GET"])
 def checklist(ref):
     """
     Checklists
@@ -223,4 +223,4 @@ def checklist(ref):
         checklists = {**read_dict, **read_dict2, **read_dict3}
         img.append("../static/checklists/buySetup.png")
 
-    return render_template("checklist.html", checklists=checklists, img=img)
+    return render_template("checklist.html", checklists=checklists, img=img, title="Checklists")

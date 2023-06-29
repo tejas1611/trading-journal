@@ -11,7 +11,7 @@ class CHECKLISTS(Enum):
 def read_checklist_file(fname) -> dict:
     read_dict = {}
     heading = ""
-    with open(fname) as f:
+    with open(fname, encoding='utf-8') as f:
         for line in f:
             if not line.strip('\n'): continue
             if line.startswith('#'):
